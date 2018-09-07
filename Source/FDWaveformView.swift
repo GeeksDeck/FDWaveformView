@@ -254,15 +254,15 @@ open class FDWaveformView: UIView {
         addSubview(clipping)
         clipsToBounds = true
 
-        pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture))
-        pinchRecognizer.delegate = self
-        addGestureRecognizer(pinchRecognizer)
-        panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        panRecognizer.delegate = self
-        addGestureRecognizer(panRecognizer)
-        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
-        //        tapRecognizer.delegate = self
-        addGestureRecognizer(tapRecognizer)
+//        pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture))
+//        pinchRecognizer.delegate = self
+//        addGestureRecognizer(pinchRecognizer)
+//        panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+//        panRecognizer.delegate = self
+//        addGestureRecognizer(panRecognizer)
+//        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
+//        //        tapRecognizer.delegate = self
+//        addGestureRecognizer(tapRecognizer)
     }
 
     required public init?(coder aCoder: NSCoder) {
