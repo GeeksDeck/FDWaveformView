@@ -460,71 +460,71 @@ enum FDWaveformType: Equatable {
         }
     }
 }
-
-extension FDWaveformView: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-
-    @objc func handlePinchGesture(_ recognizer: UIPinchGestureRecognizer) {
-        if !doesAllowStretch {
-            return
-        }
-        if recognizer.scale == 1 {
-            return
-        }
-
-        let zoomRangeSamples = CGFloat(zoomSamples.count)
-        let pinchCenterSample = zoomSamples.lowerBound + Int(zoomRangeSamples * recognizer.location(in: self).x / bounds.width)
-        let newZoomRangeSamples = Int(zoomRangeSamples * 1.0 / recognizer.scale)
-        let newZoomStart = pinchCenterSample - Int(CGFloat(pinchCenterSample - zoomSamples.lowerBound) * 1.0 / recognizer.scale)
-        let newZoomEnd = newZoomStart + newZoomRangeSamples
-
-        zoomSamples = (newZoomStart ..< newZoomEnd).clamped(to: 0 ..< totalSamples)
-        recognizer.scale = 1
-    }
-
-    @objc func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
-        guard !zoomSamples.isEmpty else {
-            return
-        }
-
-        let point = recognizer.translation(in: self)
-        if doesAllowScroll {
-            if recognizer.state == .began {
-                delegate?.waveformDidBeginPanning?(self)
-            }
-            let translationSamples = Int(CGFloat(zoomSamples.count) * point.x / bounds.width)
-            recognizer.setTranslation(CGPoint.zero, in: self)
-
-            switch translationSamples {
-            case let x where x > zoomSamples.startIndex:
-                zoomSamples = 0 ..< zoomSamples.count
-            case let x where zoomSamples.endIndex - x > totalSamples:
-                zoomSamples = totalSamples - zoomSamples.count ..< totalSamples
-            default:
-                zoomSamples = zoomSamples.startIndex - translationSamples ..< zoomSamples.endIndex - translationSamples
-            }
-            if recognizer.state == .ended {
-                delegate?.waveformDidEndPanning?(self)
-            }
-        }
-        else if doesAllowScrubbing {
-            let rangeSamples = CGFloat(zoomSamples.count)
-            let scrubLocation = min(max(recognizer.location(in: self).x, 0), frame.width)    // clamp location within the frame
-            highlightedSamples = 0 ..< Int((CGFloat(zoomSamples.startIndex) + rangeSamples * scrubLocation / bounds.width))
-            delegate?.waveformDidEndScrubbing?(self)
-        }
-    }
-
-    @objc func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
-        if doesAllowScrubbing {
-            let rangeSamples = CGFloat(zoomSamples.count)
-            highlightedSamples = 0 ..< Int((CGFloat(zoomSamples.startIndex) + rangeSamples * recognizer.location(in: self).x / bounds.width))
-            delegate?.waveformDidEndScrubbing?(self)
-        }
-    }
-}
+//
+//extension FDWaveformView {
+//    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
+//
+//    @objc func handlePinchGesture(_ recognizer: UIPinchGestureRecognizer) {
+//        if !doesAllowStretch {
+//            return
+//        }
+//        if recognizer.scale == 1 {
+//            return
+//        }
+//
+//        let zoomRangeSamples = CGFloat(zoomSamples.count)
+//        let pinchCenterSample = zoomSamples.lowerBound + Int(zoomRangeSamples * recognizer.location(in: self).x / bounds.width)
+//        let newZoomRangeSamples = Int(zoomRangeSamples * 1.0 / recognizer.scale)
+//        let newZoomStart = pinchCenterSample - Int(CGFloat(pinchCenterSample - zoomSamples.lowerBound) * 1.0 / recognizer.scale)
+//        let newZoomEnd = newZoomStart + newZoomRangeSamples
+//
+//        zoomSamples = (newZoomStart ..< newZoomEnd).clamped(to: 0 ..< totalSamples)
+//        recognizer.scale = 1
+//    }
+//
+//    @objc func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+//        guard !zoomSamples.isEmpty else {
+//            return
+//        }
+//
+//        let point = recognizer.translation(in: self)
+//        if doesAllowScroll {
+//            if recognizer.state == .began {
+//                delegate?.waveformDidBeginPanning?(self)
+//            }
+//            let translationSamples = Int(CGFloat(zoomSamples.count) * point.x / bounds.width)
+//            recognizer.setTranslation(CGPoint.zero, in: self)
+//
+//            switch translationSamples {
+//            case let x where x > zoomSamples.startIndex:
+//                zoomSamples = 0 ..< zoomSamples.count
+//            case let x where zoomSamples.endIndex - x > totalSamples:
+//                zoomSamples = totalSamples - zoomSamples.count ..< totalSamples
+//            default:
+//                zoomSamples = zoomSamples.startIndex - translationSamples ..< zoomSamples.endIndex - translationSamples
+//            }
+//            if recognizer.state == .ended {
+//                delegate?.waveformDidEndPanning?(self)
+//            }
+//        }
+//        else if doesAllowScrubbing {
+//            let rangeSamples = CGFloat(zoomSamples.count)
+//            let scrubLocation = min(max(recognizer.location(in: self).x, 0), frame.width)    // clamp location within the frame
+//            highlightedSamples = 0 ..< Int((CGFloat(zoomSamples.startIndex) + rangeSamples * scrubLocation / bounds.width))
+//            delegate?.waveformDidEndScrubbing?(self)
+//        }
+//    }
+//
+//    @objc func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
+//        if doesAllowScrubbing {
+//            let rangeSamples = CGFloat(zoomSamples.count)
+//            highlightedSamples = 0 ..< Int((CGFloat(zoomSamples.startIndex) + rangeSamples * recognizer.location(in: self).x / bounds.width))
+//            delegate?.waveformDidEndScrubbing?(self)
+//        }
+//    }
+//}
 
 /// To receive progress updates from FDWaveformView
 @objc public protocol FDWaveformViewDelegate: NSObjectProtocol {
